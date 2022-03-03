@@ -99,10 +99,15 @@
 		       <x-input.text wire:model="editing.title" id="title" />
 	       </x-input.group>
 	       <x-input.group for="amount" label="Amount" :error="$errors->first('editing.amount')">
-		       <x-input.text wire:model="editing.amount" id="amount" />
+		       <x-input.money wire:model="editing.amount" id="amount" />
 	       </x-input.group>
 	       <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
-		       <x-input.text wire:model="editing.status" id="status" />
+		       <x-input.select wire:model="editing.status" id="status" > 
+					   
+				    @foreach( \App\Models\Transaction::STATUSES as $value=>$label)
+					   <option value="{{ $value }}"> {{$label}}</option>
+				    @endforeach
+				</x-input.select>
 	       </x-input.group>
 		   <x-input.group for="date" label="Date" :error="$errors->first('editing.date')">
 		       <x-input.text wire:model="editing.date"  type="date"  placeholder="DD/MM/YYYY" id="date" />

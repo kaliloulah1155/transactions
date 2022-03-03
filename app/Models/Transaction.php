@@ -10,6 +10,13 @@ class Transaction extends Model
 {
     use HasFactory,Searchable;
     
+    const STATUSES=[
+    
+         'success'=>'success',
+         'failed'=>'Failed',
+         'processing'=>'Processing'
+    ];
+    
     protected $fillable=[
          'title',
         'amount',

@@ -16,14 +16,18 @@ class Dashboard extends Component
     public $showEditModal=false;
     public  $editing ;
    
-    protected $rules=[
+   public function rules(){
+     return [
         'editing.id'=>'required',
-        'editing.title'=>'required',
+        'editing.title'=>'required|min:3',
         'editing.amount'=>'required',
-        'editing.status'=>'required',
+        'editing.status'=>'required|in:'.collect(Transaction::STATUSES)->keys()->implode(','),
         'editing.date'=>'required',
         
     ];
+   }
+   
+  
     
     protected $queryString=['sortField','sortDirection'];
     
