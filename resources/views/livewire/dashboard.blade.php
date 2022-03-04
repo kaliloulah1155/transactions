@@ -29,11 +29,11 @@
 				        </x-input.group>
 				           <div class=" flex justify-between ">
 						        <x-input.group inline for="filter-amount-min" label="Minimum Amount">
-								     <x-input.money id="filter-amount-min" placeholder=" 0" />
+								     <x-input.money id="filter-amount-min" placeholder="0" />
 						        </x-input.group>
 						        
 								<x-input.group inline for="filter-amount-max" label="Maximum Amount">
-								     <x-input.money id="filter-amount-max" placeholder=" 0" />
+								     <x-input.money id="filter-amount-max" placeholder="0" />
 						        </x-input.group>
 						 </div>
 						 <div class=" flex justify-between ">
