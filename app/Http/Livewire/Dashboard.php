@@ -5,7 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Transaction;
 use Livewire\WithPagination;
-
+   
 class Dashboard extends Component
 {   
     use WithPagination;
@@ -14,11 +14,13 @@ class Dashboard extends Component
     public $sortField='title';
     public $sortDirection='asc';
     public $showEditModal=false;
-    public  $editing ;
+    public $editing ;
+    public $modalText="Add";
+    public $showFilters=false;
    
    public function rules(){
      return [
-        'editing.id'=>'required',
+        'editing.id'=>'',
         'editing.title'=>'required|min:3',
         'editing.amount'=>'required',
         'editing.status'=>'required|in:'.collect(Transaction::STATUSES)->keys()->implode(','),
@@ -36,7 +38,16 @@ class Dashboard extends Component
         $this->resetPage(); 
     }
     
-     
+    
+     public function makeBlankTransaction(){
+        $this->modalText="Add";
+        
+        $this->editing['id']= '';
+        $this->editing['date']=  (new \DateTime(now() ))->format('Y-m-d');
+        $this->editing['title']= '';
+        $this->editing['amount']=  '';
+        $this->editing['status']= 'processing';
+     }
    
     
     public function sortBy($field){
@@ -49,7 +60,17 @@ class Dashboard extends Component
        $this->sortField = $field;
     }
     
+    public function create(){
+    
+        $this->makeBlankTransaction();
+        $this->showEditModal =true;
+        
+        
+    }
+    
     public function edit(Transaction $transaction){
+    
+        $this->modalText="Edit";
         $this->editing['id']=  $transaction['id'];
         $this->editing['date']=  (new \DateTime($transaction['date'] ))->format('Y-m-d');
         $this->editing['title']=  $transaction['title'];
@@ -64,9 +85,21 @@ class Dashboard extends Component
     
        $this->validate();
        
-       ///dd($this->editing);
-       //$this->editing->update();
-       Transaction::where('id', '=', $this->editing['id'])->update($this->editing);
+      $record = Transaction::find($this->editing['id']);
+      
+      if($record){
+        Transaction::where('id', '=', $this->editing['id'])->update($this->editing);
+      }else{
+      
+        Transaction::create([
+            'title' => $this->editing['title'],
+            'amount' =>$this->editing['amount'],
+            'status' => $this->editing['status'],
+            'date' => (new \DateTime($this->editing['date'] ))->format('Y-m-d'),
+        ]);
+      
+      }
+       
        $this->showEditModal =false;
     }
 

@@ -5,15 +5,58 @@
    
     
    <div class="py-4 space-y-4">
-      <div>
-           <div class="w-1/4">
+      <div class="flex justify-between">
+           <div class="w-2/4 flex space-x-4 ">
                <x-input.text wire:model="search"  placeholder="Search transaction ..."  />
+			   <x-button.link wire:click="$toggle('showFilters')"> @if($showFilters)Hide @endif Advanced Search ...</x-button.link>
 			</div>
+			<div>
+               <x-button.primary wire:click="create"> <x-icon.plus/> New</x-button.primary>
+			</div>
+		</div>
+		<div>
+			@if($showFilters) 
+				<div class="bg-cool-gray-200 p-4 rounded shadow-inner flex justify-around  relative"> 
+				     <div class="w-1/2 pr-2 space-y-4">
+				     
+				        <x-input.group inline for="filter-status" label="Status">
+				           <x-input.select id="filter-status">
+				               <option value="" disabled> Select Status ... </option>
+				               @foreach(App\Models\Transaction::STATUSES as $value => $label)
+							      <option value="{{ $value }}" > {{ $label }} </option>
+				               @endforeach
+							</x-input.select>
+				        </x-input.group>
+				           <div class=" flex justify-between ">
+						        <x-input.group inline for="filter-amount-min" label="Minimum Amount">
+								     <x-input.money id="filter-amount-min" placeholder=" 0" />
+						        </x-input.group>
+						        
+								<x-input.group inline for="filter-amount-max" label="Maximum Amount">
+								     <x-input.money id="filter-amount-max" placeholder=" 0" />
+						        </x-input.group>
+						 </div>
+						 <div class=" flex justify-between ">
+						        <x-input.group inline for="filter-date-min" label="Minimum Date">
+								     <x-input.date id="filter-date-min" type="date"  placeholder="DD/MM/YYYY" />
+						        </x-input.group>
+						        
+								<x-input.group inline for="filter-date-max" label="Maximum Date">
+								     <x-input.date id="filter-date-max" type="date"  placeholder="DD/MM/YYYY" />
+						        </x-input.group>
+						 </div>
+				     </div>
+				     
+				     <x-button.link class="absolute right-0 bottom-0 p-4 bg-indigo-500 hover:bg-cyan-600 btn" >Reset Filters</x-button.link>
+				
+				</div>
+			@endif
+			
 		</div>
     <div class="flex-col space-y-4" wire:loading.class="opacity-50" wire:target="search">
        <x-table>
           <x-slot name="head">
-              <x-table.heading> <a wire:click="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null ">Title</a></x-table.heading>
+              <x-table.heading> <a wire:click="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null " class="w-full">Title</a></x-table.heading>
 			  <x-table.heading> <a wire:click="sortBy('amount')" :direction="$sortField === 'amount' ? $sortDirection : null ">Amount</a> </x-table.heading>
 			  <x-table.heading> <a wire:click="sortBy('status')" :direction="$sortField === 'status' ? $sortDirection : null ">Status</a></x-table.heading>
 			  <x-table.heading> <a wire:click="sortBy('date')" :direction="$sortField === 'date' ? $sortDirection : null ">Date</a></x-table.heading>
@@ -92,14 +135,14 @@
 
  
 	<x-modal.dialog wire:model.defer="showEditModal">
-	   <x-slot name="title">Edit Transaction</x-slot>
+	   <x-slot name="title"> {{$modalText}} Transaction</x-slot>
 	   
 	   <x-slot name="content">
 	       <x-input.group for="title" label="Title" :error="$errors->first('editing.title')">
-		       <x-input.text wire:model="editing.title" id="title" />
+		       <x-input.text wire:model="editing.title" placeholder="title" id="title" />
 	       </x-input.group>
 	       <x-input.group for="amount" label="Amount" :error="$errors->first('editing.amount')">
-		       <x-input.money wire:model="editing.amount" id="amount" />
+		       <x-input.money wire:model="editing.amount" placeholder="amount" id="amount" />
 	       </x-input.group>
 	       <x-input.group for="status" label="Status" :error="$errors->first('editing.status')">
 		       <x-input.select wire:model="editing.status" id="status" > 
