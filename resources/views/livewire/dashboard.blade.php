@@ -18,9 +18,9 @@
 			@if($showFilters) 
 				<div class="bg-cool-gray-200 p-4 rounded shadow-inner flex justify-around  relative"> 
 				     <div class="w-1/2 pr-2 space-y-4">
-				     
+				             {{--  @json($filters)--}} 
 				        <x-input.group inline for="filter-status" label="Status">
-				           <x-input.select id="filter-status">
+				           <x-input.select wire:model="filters.status" id="filter-status">
 				               <option value="" disabled> Select Status ... </option>
 				               @foreach(App\Models\Transaction::STATUSES as $value => $label)
 							      <option value="{{ $value }}" > {{ $label }} </option>
@@ -29,25 +29,25 @@
 				        </x-input.group>
 				           <div class=" flex justify-between ">
 						        <x-input.group inline for="filter-amount-min" label="Minimum Amount">
-								     <x-input.money id="filter-amount-min" placeholder="0" />
+								     <x-input.money wire:model.lazy="filters.amount-min" id="filter-amount-min" placeholder="0" />
 						        </x-input.group>
 						        
 								<x-input.group inline for="filter-amount-max" label="Maximum Amount">
-								     <x-input.money id="filter-amount-max" placeholder="0" />
+								     <x-input.money wire:model.lazy="filters.amount-max" id="filter-amount-max" placeholder="0" />
 						        </x-input.group>
 						 </div>
 						 <div class=" flex justify-between ">
 						        <x-input.group inline for="filter-date-min" label="Minimum Date">
-								     <x-input.date id="filter-date-min" type="date"  placeholder="DD/MM/YYYY" />
+								     <x-input.date wire:model.lazy="filters.date-min" id="filter-date-min" type="date"  placeholder="DD/MM/YYYY" />
 						        </x-input.group>
 						        
 								<x-input.group inline for="filter-date-max" label="Maximum Date">
-								     <x-input.date id="filter-date-max" type="date"  placeholder="DD/MM/YYYY" />
+								     <x-input.date wire:model.lazy="filters.date-max" id="filter-date-max" type="date"  placeholder="DD/MM/YYYY" />
 						        </x-input.group>
 						 </div>
 				     </div>
 				     
-				     <x-button.link class="absolute right-0 bottom-0 p-4 bg-indigo-500 hover:bg-cyan-600 btn" >Reset Filters</x-button.link>
+				     <x-button.link class="absolute right-0 bottom-0 p-4 bg-indigo-500 hover:bg-cyan-600 btn" wire:click="resetFilters" >Reset Filters</x-button.link>
 				
 				</div>
 			@endif

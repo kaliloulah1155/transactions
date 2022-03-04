@@ -17,6 +17,13 @@ class Dashboard extends Component
     public $editing ;
     public $modalText="Add";
     public $showFilters=false;
+    public $filters=[
+        'status'=>'',
+        'amount-min'=>null,
+        'amount-max'=>null,
+        'date-min'=>null,
+        'date-max'=>null
+    ];
    
    public function rules(){
      return [
@@ -25,7 +32,6 @@ class Dashboard extends Component
         'editing.amount'=>'required',
         'editing.status'=>'required|in:'.collect(Transaction::STATUSES)->keys()->implode(','),
         'editing.date'=>'required',
-        
     ];
    }
    
@@ -33,10 +39,10 @@ class Dashboard extends Component
     
     protected $queryString=['sortField','sortDirection'];
     
-    public function updatingSearch()
+   /* public function updatingSearch()
     {
         $this->resetPage(); 
-    }
+    }*/
     
     
      public function makeBlankTransaction(){
@@ -102,6 +108,10 @@ class Dashboard extends Component
        
        $this->showEditModal =false;
     }
+    
+    public function resetFilters(){
+      $this->reset('filters');
+    }
 
     public function render()
     {
@@ -120,7 +130,23 @@ class Dashboard extends Component
         }
         
         return view('livewire.dashboard',[
-            'transactions'=>Transaction::orderBy($this->sortField, $this->sortDirection)->paginate(10)
+            'transactions'=>Transaction::query()
+            ->when($this->filters['status'],function($query,$status){
+                return $query->where('status',$status) ;
+            })
+            ->when($this->filters['amount-min'],function($query,$amount){
+                return $query->where('amount','>=',$amount) ;
+            })
+            ->when($this->filters['amount-max'],function($query,$amount){
+                return $query->where('amount','<=',$amount) ;
+            })
+            ->when($this->filters['date-min'],function($query,$date){
+                return $query->where('date','>=',$date) ;
+            })
+            ->when($this->filters['date-max'],function($query,$date){
+                return $query->where('date','<=',$date) ;
+            })
+            ->orderBy($this->sortField, $this->sortDirection)->paginate(10)
         ])->layout('layouts.master');
         
     }
