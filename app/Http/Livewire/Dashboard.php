@@ -17,7 +17,9 @@ class Dashboard extends Component
     public $editing ;
     public $modalText="Add";
     public $showFilters=false;
+    public $selected=[];
     public $filters=[
+        'search'=>'',
         'status'=>'',
         'amount-min'=>null,
         'amount-max'=>null,
@@ -39,10 +41,10 @@ class Dashboard extends Component
     
     protected $queryString=['sortField','sortDirection'];
     
-   /* public function updatingSearch()
+    public function updating()
     {
         $this->resetPage(); 
-    }*/
+    }
     
     
      public function makeBlankTransaction(){
@@ -121,13 +123,13 @@ class Dashboard extends Component
         $sort = $this->sortField;
         $order = $this->sortDirection;
         
-        if(!empty($this->search)){
+        /*if(!empty($this->search)){
               
             return view('livewire.dashboard',[
                 'transactions'=>Transaction::search($this->search)
                 ->within('title_asc')->paginate(10)
             ])->layout('layouts.master');
-        }
+        }*/
         
         return view('livewire.dashboard',[
             'transactions'=>Transaction::query()
@@ -145,6 +147,9 @@ class Dashboard extends Component
             })
             ->when($this->filters['date-max'],function($query,$date){
                 return $query->where('date','<=',$date) ;
+            })
+            ->when($this->filters['search'],function($query,$search){
+                return $query->where('title','like','%'.$search.'%') ;
             })
             ->orderBy($this->sortField, $this->sortDirection)->paginate(10)
         ])->layout('layouts.master');

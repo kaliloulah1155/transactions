@@ -7,10 +7,14 @@
    <div class="py-4 space-y-4">
       <div class="flex justify-between">
            <div class="w-2/4 flex space-x-4 ">
-               <x-input.text wire:model="search"  placeholder="Search transaction ..."  />
+               <x-input.text wire:model="filters.search"  placeholder="Search transaction ..."  />
 			   <x-button.link wire:click="$toggle('showFilters')"> @if($showFilters)Hide @endif Advanced Search ...</x-button.link>
 			</div>
-			<div>
+			<div class="w-1/4 flex space-x-4 ">
+			  <x-dropdown label="Bulk Actions">
+			        <x-dropdown.item item="export">Export</x-dropdown.item>
+			        <x-dropdown.item item="delete">Delete</x-dropdown.item>
+			  </x-dropdown>
                <x-button.primary wire:click="create"> <x-icon.plus/> New</x-button.primary>
 			</div>
 		</div>
@@ -51,11 +55,14 @@
 				
 				</div>
 			@endif
-			
 		</div>
+		@json($selected)
     <div class="flex-col space-y-4" wire:loading.class="opacity-50" wire:target="search">
        <x-table>
           <x-slot name="head">
+		     <x-table.heading> 
+			      <x-input.checkbox  />
+		     </x-table.heading>
               <x-table.heading> <a wire:click="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null " class="w-full">Title</a></x-table.heading>
 			  <x-table.heading> <a wire:click="sortBy('amount')" :direction="$sortField === 'amount' ? $sortDirection : null ">Amount</a> </x-table.heading>
 			  <x-table.heading> <a wire:click="sortBy('status')" :direction="$sortField === 'status' ? $sortDirection : null ">Status</a></x-table.heading>
@@ -63,14 +70,16 @@
 		      <x-table.heading> </x-table.heading>
 		  </x-slot>
 		  <x-slot name="body">
-		  
-		     
-		    
              
 		    @forelse($transactions as $transaction)
 		    
 			
-		      <x-table.row >
+		      <x-table.row wire:key="row-{{ $transaction->id }}">
+		      
+				  <x-table.cell> 
+				      <x-input.checkbox wire:model="selected" value="{{ $transaction->id }}" />
+			     </x-table.cell>
+		     
 		          <x-table.cell>
 		          
 				        <div class="flex items-center">
